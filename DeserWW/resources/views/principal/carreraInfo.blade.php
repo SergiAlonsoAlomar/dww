@@ -1,14 +1,10 @@
 <?php
-
-
 use Illuminate\Support\Facades\Auth;
-
 
 $idCorredor = Auth::id();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 
 <head>
     <meta charset="UTF-8">
@@ -18,7 +14,6 @@ $idCorredor = Auth::id();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-
 <style>
     .imgCartel {
         width: 270px;
@@ -26,8 +21,6 @@ $idCorredor = Auth::id();
         padding-top: 15px;
     }
 </style>
-
-
 <body>
     @if (Auth::check())
         @include('principal/headerLogeado')
@@ -55,10 +48,11 @@ $idCorredor = Auth::id();
                 </div>
             </div>
         </div>
-
-
         <?php
         if (strtotime($carrera->fecha_inicio) >= strtotime('+10 days')) {
+            if($inscrito){
+                echo 'Ya estás inscrito';
+            }else{
         ?>
             <!-- Botón para mostrar el formulario -->
             <form action="{{ route('comprobacion', ['precio' => $carrera->precio_inscripcion]) }}" method="GET">
@@ -74,37 +68,27 @@ $idCorredor = Auth::id();
                     <div class="error-message ml-2 d-inline-block"></div>
                     <input type="text" id="dni" name="dni" required class="form-control">
                 </div>
-
-
                 <!-- Campo de nombre -->
                 <div class="form-group">
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" required class="form-control">
                 </div>
-
-
                 <!-- Campo de apellidos -->
                 <div class="form-group">
                     <label for="apellidos">Apellidos:</label>
                     <input type="text" id="apellidos" name="apellidos" required class="form-control">
                 </div>
-
-
                 <!-- Campo de dirección -->
                 <div class="form-group">
                     <label for="direccion">Dirección:</label>
                     <input type="text" id="direccion" name="direccion" required class="form-control">
                 </div>
-
-
                 <!-- Campo de fecha de nacimiento -->
                 <div class="form-group">
                     <label for="nacimiento">Fecha de nacimiento:</label>
                     <div class="error-message ml-2 d-inline-block"></div>
                     <input type="date" id="nacimiento" name="nacimiento" required class="form-control">
                 </div>
-
-
                 <!-- Campo de nivel -->
                 <div class="form-group">
                     <label for="nivel">Nivel:</label>
@@ -113,8 +97,6 @@ $idCorredor = Auth::id();
                         <option value="PRO">PRO</option>
                     </select>
                 </div>
-
-
                 <!-- Campo de número de federado (solo visible si el nivel es PRO) -->
                 <div class="form-group" id="numero_federado_div">
                     <label for="numero_federado">Número de federado (PRO):</label>
@@ -126,7 +108,7 @@ $idCorredor = Auth::id();
                     <label for="seguro" class="form-label">Selecciona un seguro:</label>
                     <select name="seguro" id="seguro" class="form-select" required>
                         <option value="" selected disabled>Selecciona un seguro</option>
-                        @for($i = 0; $i < count($seguros) && $i < 4; $i++) 
+                        @for($i = 0; $i < count($seguros) && $i < 4; $i++)
                             <option value="{{$seguros[$i]->id}}">{{$seguros[$i]->nombre}}</option>
                         @endfor
                     </select>
@@ -134,11 +116,17 @@ $idCorredor = Auth::id();
                 <button type="submit" class="btn btn-primary">Inscribirse</button>
             </form>
         <?php
-        } elseif (strtotime($carrera->fecha_inicio) < strtotime('+10 days') && strtotime($carrera->fecha_inicio) > strtotime('+1 days')) {
+            }
+        }
+        elseif (strtotime($carrera->fecha_inicio) < strtotime('+10 days') && strtotime($carrera->fecha_inicio) > strtotime('now')) {
             echo 'No es posible inscribirse a esta carrera, faltan menos de 10 días para que comience.';
-            
-        } elseif (strtotime($carrera->fecha_inicio) <= strtotime('now') && strtotime($carrera->fecha_inicio) > strtotime('-1 day')) {
+           
+        } elseif (strtotime($carrera->fecha_inicio) <= strtotime('-1 day')) {
+            ?>
+            <a href="{{ route('mostrarFotos', ['id' => $carrera->id]) }}">Ver fotos</a><br>
+            <?php
         ?>
+       
             @if ($dorsalesCompletados->isNotEmpty())
         <div class="row mt-5">
             <div class="col-md-12">
@@ -165,7 +153,8 @@ $idCorredor = Auth::id();
         <p>No hay dorsales completados para esta carrera.</p>
     @endif
         <?php
-        } else {
+        }
+         else {
             echo 'No es posible inscribirse a esta carrera, ya ha finalizado.';
             ?>
             <a href="{{ route('mostrarFotos', ['id' => $carrera->id]) }}">Ver fotos</a>
@@ -173,8 +162,6 @@ $idCorredor = Auth::id();
         }
         ?>
     </div>
-
-
     <script>
         $(document).ready(function() {
             $('#nivel').change(function() {
@@ -184,7 +171,6 @@ $idCorredor = Auth::id();
                     $('#numero_federado').prop('disabled', true);
                 }
             });
-
 
             function validarDNI(dni) {
                 var letras = 'TRWAGMYFPDXBNJZSQVHLCKE';
@@ -206,7 +192,6 @@ $idCorredor = Auth::id();
                 return true;
             }
 
-
             function validarEdad(fechaNacimiento) {
                 var fechaNacimientoDate = new Date(fechaNacimiento);
                 var hoy = new Date();
@@ -224,13 +209,11 @@ $idCorredor = Auth::id();
                 }
             }
 
-
             function mostrarError(campo, mensaje) {
                 campo.addClass('is-invalid');
                 campo.siblings('.error-message').text(mensaje).show();
                 $('#submit-btn').prop('disabled', true);
             }
-
 
             function limpiarErrores(campo) {
                 campo.removeClass('is-invalid');
@@ -240,7 +223,6 @@ $idCorredor = Auth::id();
                     $('#submit-btn').prop('disabled', false);
                 }
             }
-
 
             function actualizarEstadoBotonRegistro() {
                 var dni = $('#dni').val().trim();
@@ -254,7 +236,6 @@ $idCorredor = Auth::id();
                 }
             }
 
-
             $('input, select').on('keyup change blur', function() {
                 actualizarEstadoBotonRegistro();
             });
@@ -262,10 +243,4 @@ $idCorredor = Auth::id();
     </script>
 </body>
 
-
 </html>
-
-
-
-
-

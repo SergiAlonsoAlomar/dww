@@ -201,7 +201,10 @@
                 var mayuscula = /[A-Z]/;
                 var minuscula = /[a-z]/;
                 var numero = /[0-9]/;
-                if (!mayuscula.test(contraseña) || !minuscula.test(contraseña) || !numero.test(contraseña) || contraseña.length < 6) {
+                const contraseñaValida = mayuscula.test(contraseña) && minuscula.test(contraseña) && numero.test(contraseña) && contraseña.length >= 6;
+
+                if (!contraseñaValida) {
+                // if (!mayuscula.test(contraseña) || !minuscula.test(contraseña) || !numero.test(contraseña) || contraseña.length < 6) {
                     mostrarError($('#contrasena'), '6 cara. (mayús., minús., núm.).');
                     return false;
                 } else {

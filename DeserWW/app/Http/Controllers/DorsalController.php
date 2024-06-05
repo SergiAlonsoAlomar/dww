@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+
+
 use App\Models\Dorsal;
 use App\Models\Corredor;
 use App\Models\Carrera;
 use Illuminate\Http\Request;
 use Endroid\QrCode\QrCode;
 use Carbon\Carbon;
+
 
 class DorsalController extends Controller
 {
@@ -20,18 +23,22 @@ class DorsalController extends Controller
         $seguroId = $request->input('seguroId');
         $precioTotal = $request->input('precioTotal');
 
+
         // Generar el código QR con el ID del corredor
         $qrCode = new QrCode('read-qr/'.$corredorId);
 
+
         // Guardar la imagen del código QR en el almacenamiento
-        $qrPath = 'qr_codes/' . $corredorId . '.png'; // Cambia la extensión del archivo si prefieres otro formato de imagen
+        $qrPath = $corredorId . '.png'; // Cambia la extensión del archivo si prefieres otro formato de imagen
         $qrCode = storage_path('app/public/' . $qrPath); //
+
+
 
 
         // Obtener el último dorsal registrado para la carrera
         $ultimoDorsal = Dorsal::where('id_carrera', $carreraId)->orderBy('dorsal', 'desc')->first();
         $numeroDorsal = $ultimoDorsal ? intval(substr($ultimoDorsal->dorsal, 1)) + 1 : 1;
-        
+       
         // Crear un nuevo objeto Dorsal con los datos recibidos
         $dorsal = new Dorsal();
         $dorsal->id_carrera = $carreraId;
@@ -40,10 +47,13 @@ class DorsalController extends Controller
         $dorsal->dorsal = "D". $numeroDorsal;
         $dorsal->qr = $qrPath;
 
+
         // Guardar el nuevo dorsal en la base de datos
         $dorsal->save();
 
+
         // Aquí puedes realizar otras acciones necesarias, como enviar correos electrónicos de confirmación, etc.
+
 
         // Devolver una respuesta adecuada
         return response()->json(['message' => 'Inscripción realizada con éxito'], 200);
@@ -53,5 +63,25 @@ class DorsalController extends Controller
         return response()->json(['error' => 'El corredor no está autenticado'], 401);
     }
 }
+public function verificarInscripcion($carrera,$corredor)
+    {
+        $carrera_id = $carrera;
+        $corredor_id = $corredor;
+
+
+        // Buscar en la tabla dorsales
+        $dorsal = Dorsal::where('id_carrera', $carrera_id)
+                        ->where('id_corredor', $corredor_id)
+                        ->first();
+
+
+        // Verificar si se encontró alguna coincidencia
+        if ($dorsal) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 }

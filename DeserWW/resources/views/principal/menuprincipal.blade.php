@@ -1,5 +1,8 @@
 <?php
 use Illuminate\Support\Facades\Auth;
+
+
+$idCorredor = Auth::id();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,12 +14,13 @@ use Illuminate\Support\Facades\Auth;
     <link href="{{ asset('css/principalCSS/menu.css') }}" rel="stylesheet">
 </head>
 <body>
-    
+   
 @if (Auth::check())
     @include('principal/headerLogeado')
 @else
     @include('principal/headerPrincipal')
 @endif
+
 
 <div class="next-race-container">
     @if ($proximaCarrera)
@@ -30,24 +34,26 @@ use Illuminate\Support\Facades\Auth;
                 // Obtenemos la fecha de inicio de la próxima carrera
                 var fechaInicio = new Date("{{ $proximaCarrera->fecha_inicio }}").getTime();
 
+
                 // Actualizamos el contador cada segundo
                 var x = setInterval(function() {
 
+
                     // Obtenemos la fecha y hora actual
                     var ahora = new Date().getTime();
-                    
+                   
                     // Calculamos la diferencia entre la fecha de inicio y la fecha actual
                     var diferencia = fechaInicio - ahora;
-                    
+                   
                     // Calculamos días, horas, minutos y segundos
                     var dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
                     var horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     var minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
                     var segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
-                    
+                   
                     // Mostramos el contador en el elemento con id "countdown"
                     document.getElementById("countdown").innerHTML = " <strong>Next Race:  "+ dias + "d " + horas + "h " + minutos + "m " + segundos + "s </strong>";
-                    
+                   
                     // Si la cuenta regresiva ha terminado, mostramos un mensaje
                     if (diferencia < 0) {
                         clearInterval(x);
@@ -59,6 +65,7 @@ use Illuminate\Support\Facades\Auth;
     @else
         <p>No hay próximas carreras programadas.</p>
     @endif
+
 
 </div>
 <div class="container">
@@ -76,6 +83,7 @@ use Illuminate\Support\Facades\Auth;
     </div>
 </div>
 
+
 <footer>
     <div class="container" >
         <div class="row justify-content-center">
@@ -89,5 +97,10 @@ use Illuminate\Support\Facades\Auth;
     </div>
 </footer>
 
+
 </body>
 </html>
+
+
+
+

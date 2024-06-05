@@ -7,5 +7,8 @@
                 <img src="{{ asset('images/logo.png') }}" alt="Icono" class="me-3">
             </a>
             <h2 class="m-0">CONTROL DE ADMINISTRACIÓN</h2>
+            <div class="profile-dropdown">
+                    <a href="{{ route('logout') }}"><span>Cerrar sesión</span></a>
+            </div>
         </div>
     </header>

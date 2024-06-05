@@ -21,7 +21,7 @@
                 </div>
                 <div class="imagen">
                 <a href="{{ route('mostrar-sponsor') }}">
-                    <img src="{{ asset('images/nike.png') }}" alt="Icono" class="img">
+                    <img src="{{ asset('images/sponsors/logo_nike.png') }}" alt="Icono" class="img">
                 </a>
                 </div>
             </div>
